@@ -19,8 +19,8 @@ module.exports = {
                 return { src: name };
             } catch (e) {
                 var possibleFiles = glob.sync(`${root}/${name}-from-*`);
-                if (possibleFiles.length > 1) throw `Multiple defintion of the same name but different base layers: ${possibleFiles}`
-                if (possibleFiles.length == 0) throw `Name ${name} could not be found`;
+                if (possibleFiles.length > 1) throw new Error(`Multiple defintion of the same name but different base layers: ${possibleFiles}`);
+                if (possibleFiles.length == 0) throw new Error(`Name ${name} could not be found`);
                 var srcFile = path.basename(possibleFiles[0]);
                 return { src: srcFile, base: getBaseName(srcFile) };
             }
@@ -28,7 +28,7 @@ module.exports = {
         root = path.resolve(root);
         var layers = [];
         do {
-            if (layers.length > 5) throw new Error('Too many layers or circular reference');
+            if (layers.length > 5) throw new Error('Too many layers or circular layer reference');
             src = findSrcName(root, src);
             layers.push(src.src);
             src = src.base
