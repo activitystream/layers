@@ -3,19 +3,21 @@ var assert = require('chai').assert;
 var layers = require('../layers').layers;
 var path = require('path');
 
+var resolve = p => path.resolve(__dirname, 'discovery-testset', p);
+
 describe('layers discovery', function () {
     it('no base layer', function () {
-        expect(layers(path.resolve(__dirname, 'no-base-layer'), 'a')).to.deep.equals(['a'])
+        expect(layers(resolve('no-base-layer'), 'a')).to.deep.equals(['a'])
     })
 
     it('2 layers', function () {
-        expect(layers(path.resolve(__dirname, 'with-base-layer'), 'a')).to.deep.equals(['a-from-b', 'b'])
+        expect(layers(resolve('with-base-layer'), 'a')).to.deep.equals(['a-from-b', 'b'])
     })
 
     it('3 layers', function () {
-        expect(layers(path.resolve(__dirname, 'with-2-levels-of-base-layer'), 'a')).to.deep.equals(['a-from-b', 'b-from-c', 'c'])
+        expect(layers(resolve('with-2-levels-of-base-layer'), 'a')).to.deep.equals(['a-from-b', 'b-from-c', 'c'])
     })
     it('avoid circular references among layers', function () {
-        expect(_ => layers(path.resolve(__dirname, 'with-circular-reference'), 'a')).to.throw(Error);
+        expect(_ => layers(resolve('with-circular-reference'), 'a')).to.throw(Error);
     })
 })
