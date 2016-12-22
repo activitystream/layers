@@ -3,7 +3,7 @@ var assert = require('chai').assert;
 var layers = require('../layers').layers;
 var path = require('path');
 
-describe('tests', function () {
+describe('layers discovery', function () {
     it('no base layer', function () {
         expect(layers(path.resolve(__dirname, 'no-base-layer'), 'a')).to.deep.equals(['a'])
     })
@@ -15,7 +15,7 @@ describe('tests', function () {
     it('3 layers', function () {
         expect(layers(path.resolve(__dirname, 'with-2-levels-of-base-layer'), 'a')).to.deep.equals(['a-from-b', 'b-from-c', 'c'])
     })
-    it('avoid circular references', function () {
+    it('avoid circular references among layers', function () {
         expect(_ => layers(path.resolve(__dirname, 'with-circular-reference'), 'a')).to.throw(Error);
     })
 })
