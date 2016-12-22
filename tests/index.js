@@ -16,12 +16,6 @@ describe('tests', function () {
         expect(layers(path.resolve(__dirname, 'with-2-levels-of-base-layer'), 'a')).to.deep.equals(['a-from-b', 'b-from-c', 'c'])
     })
     it('avoid circular references', function () {
-        var succeeded = false;
-        try {
-            layers(path.resolve(__dirname, 'with-circular-reference'), 'a');
-            succeeded = true;
-        } catch (e) {            
-        }
-        if (succeeded) assert.fail(succeeded, false, 'should fail when circular reference detected');
+        expect(_ => layers(path.resolve(__dirname, 'with-circular-reference'), 'a')).to.throw(Error);
     })
 })

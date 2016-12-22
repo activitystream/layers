@@ -28,7 +28,7 @@ module.exports = {
         root = path.resolve(root);
         var layers = [];
         do {
-            if (layers.length > 5) throw 'Too many layers or circular reference';
+            if (layers.length > 5) throw new Error('Too many layers or circular reference');
             src = findSrcName(root, src);
             layers.push(src.src);
             src = src.base
