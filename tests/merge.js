@@ -8,4 +8,12 @@ describe.only('merging layers', function () {
         var result = merge(resolve('base-layer-pass-through'), ['top', 'base']);
         expect(result).to.deep.equals([{ file: 'a.json', layers: ['base'] }, { file: 'b.js', layers: ['base'] }]);
     })
+    it('file from top layer overrides base layer', function () {
+        var result = merge(resolve('simple-override'), ['top', 'base']);
+        expect(result).to.deep.equals([{ file: 'a.json', layers: ['base', 'top'] }, { file: 'b.js', layers: ['base'] }]);
+    })
+    it('file from top layer with no base layer revision', function () {
+        var result = merge(resolve('no-override'), ['top', 'base']);
+        expect(result).to.deep.equals([{ file: 'b.js', layers: ['base'] }, { file: 'a.json', layers: ['top'] }]);
+    })
 })
