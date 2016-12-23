@@ -16,12 +16,12 @@ var ops = {
 }
 
 var mergeJSON = function (base, json) {
-    var b = traverse(base);
+    var traversedBase = traverse(base);
     traverse(json).forEach(function(el){
         var add = el.add;
         var remove = el.remove;
         if (add || remove){
-          this.update(ops.list(b.get(this.path), el));
+          this.update(ops.list(traversedBase.get(this.path), el));
         }
     })
     return Object.assign(base, json);
