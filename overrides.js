@@ -19,7 +19,7 @@ var findFilesOverrides = function (layersFiles) {
     return result;
 }
 
-module.exports = function merge(root, layers) {
+module.exports = function overrides(root, layers) {
     var layersFiles = layers.map(l => findLayerFiles(root, l));
     return findFilesOverrides(layersFiles);
 }
