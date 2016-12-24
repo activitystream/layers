@@ -2,6 +2,10 @@ var fs = require('fs');
 var path = require('path');
 var traverse = require('traverse');
 var tmp = require('tmp');
+var mkdirp = require('mkdirp');
+var replaceExt = require('replace-ext');
+var overrides = require('./overrides');
+var layers = require('./layers');
 
 var ops = {
     list: function (l, actions) {
@@ -17,17 +21,17 @@ var ops = {
 
 var mergeJSON = function (base, json) {
     var traversedBase = traverse(base);
-    traverse(json).forEach(function(el){
+    traverse(json).forEach(function (el) {
         var add = el.add;
         var remove = el.remove;
-        if (add || remove){
-          this.update(ops.list(traversedBase.get(this.path), el));
+        if (add || remove) {
+            this.update(ops.list(traversedBase.get(this.path), el));
         }
     })
     return Object.assign(base, json);
 }
 
-module.exports = function merge(fileOverrides, target) {
+var mergeFiles = function (fileOverrides, target) {
     var resultContent = fileOverrides.reduce((acc, o) => {
         switch (path.extname(o)) {
             case '.json':
@@ -38,4 +42,21 @@ module.exports = function merge(fileOverrides, target) {
 
     }, {});
     fs.writeFileSync(target, JSON.stringify(resultContent, null, 4), 'utf8');
+}
+module.exports = {
+    mergeFiles: mergeFiles,
+    mergeDirectory: function (root, top, output) {
+        var output = output || tmp.dirSync().name;
+        var l = layers(root, top);
+        var files = overrides(root, l);
+
+        files.forEach(f => {
+            var targetFile = path.resolve(output, f.file);
+            targetFile = replaceExt(targetFile, '.json');
+            mkdirp.sync(path.dirname(targetFile));
+            var srcFiles = f.layers.map(l => path.resolve(root, l, f.file));
+            mergeFiles(srcFiles, targetFile);
+        });
+        return output;
+    }
 }
