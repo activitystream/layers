@@ -1,6 +1,6 @@
 var expect = require('chai').expect;
 var assert = require('chai').assert;
-var layers = require('../layers').layers;
+var layers = require('../layers');
 var path = require('path');
 
 var resolve = p => path.resolve(__dirname, 'discovery-testset', p);

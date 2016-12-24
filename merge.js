@@ -27,7 +27,7 @@ var mergeJSON = function (base, json) {
     return Object.assign(base, json);
 }
 
-module.exports = function merge(fileOverrides) {
+module.exports = function merge(fileOverrides, target) {
     var resultContent = fileOverrides.reduce((acc, o) => {
         switch (path.extname(o)) {
             case '.json':
@@ -37,7 +37,5 @@ module.exports = function merge(fileOverrides) {
         }
 
     }, {});
-    var tmpobj = tmp.fileSync();
-    fs.writeFileSync(tmpobj.fd, JSON.stringify(resultContent, null, 4), 'utf8');
-    return tmpobj.name;
+    fs.writeFileSync(target, JSON.stringify(resultContent, null, 4), 'utf8');
 }
