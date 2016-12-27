@@ -9,13 +9,14 @@ var layers = require('./layers');
 
 var ops = {
     list: function (l, actions) {
+        var result = l;
         if (actions.remove) {
-            l = actions.remove.reduce((agg, item) => agg.filter(i => i != item), l);
+            result = actions.remove.reduce((agg, item) => agg.filter(i => i != item), l);
         }
         if (actions.add) {
-            l = l.concat(actions.add);
+            result = result.concat(actions.add);
         }
-        return l;
+        return result;
     }
 }
 
