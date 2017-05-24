@@ -2,6 +2,7 @@ var fs = require('fs');
 var path = require('path');
 var traverse = require('traverse');
 var tmp = require('tmp');
+var debug = require('debug')('merge');
 var mkdirp = require('mkdirp');
 var replaceExt = require('replace-ext');
 var overrides = require('./overrides');
@@ -49,7 +50,9 @@ module.exports = {
     mergeDirectory: function (root, top, output) {
         var output = output || tmp.dirSync().name;
         var l = layers(root, top);
+        debug(`found layers: ${JSON.stringify(l)}`);
         var files = overrides(root, l);
+        debug(`found files: ${JSON.stringify(files)}`);
 
         files.forEach(f => {
             var targetFile = path.resolve(output, f.file);
