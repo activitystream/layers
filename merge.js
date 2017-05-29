@@ -1,6 +1,7 @@
 var fs = require('fs');
 var path = require('path');
 var traverse = require('traverse');
+var merge = require('deepmerge');
 var tmp = require('tmp');
 var debug = require('debug')('merge');
 var mkdirp = require('mkdirp');
@@ -21,25 +22,19 @@ var ops = {
     }
 }
 
-var mergeJSON = function (base, json) {
-    var traversedBase = traverse(base);
-    traverse(json).forEach(function (el) {
-        var add = el.add;
-        var remove = el.remove;
-        if (add || remove) {
-            this.update(ops.list(traversedBase.get(this.path), el));
-        }
-    })
-    return Object.assign(base, json);
-}
-
 var mergeFiles = function (fileOverrides, target) {
     var resultContent = fileOverrides.reduce((acc, o) => {
-        switch (path.extname(o)) {
-            case '.json':
-                return mergeJSON(acc, JSON.parse(fs.readFileSync(o, 'utf8')));
-            case '.js':
-                return require(o)(acc, ops);
+        try {
+            switch (path.extname(o)) {
+                case '.json':
+                    return merge(acc, JSON.parse(fs.readFileSync(o, 'utf8')));
+                case '.js':
+                    return require(o)(acc, ops);
+            }
+        } catch (ex) {
+            console.log("acc=" + JSON.stringify(acc));
+            console.log("o=" + JSON.stringify(JSON.parse(fs.readFileSync(o, 'utf8'))));
+            throw ex;
         }
 
     }, {});
