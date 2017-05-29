@@ -48,4 +48,4 @@ convention for the top level directories:
 
 How to run the program:
 
-    $ DEBUG=* node index.js sample c ./out`
+    $ DEBUG=* node index.js sample c ./out
